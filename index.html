@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07152e">
+<title>Explorador espacial | Misión conocimiento</title>
+<style>
+:root{--navy:#07152e;--deep:#030916;--yellow:#ffd34e;--white:#f4f7ff;--muted:#aebbd3;--panel:rgba(10,27,55,.88)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:var(--white);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(ellipse at 50% 42%,#152d55 0%,#091a35 42%,#030916 100%);overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.7;background-image:radial-gradient(2px 2px at 20px 30px,#fff 98%,transparent),radial-gradient(1px 1px at 90px 80px,#fff 98%,transparent),radial-gradient(1.5px 1.5px at 160px 130px,#b9d7ff 98%,transparent),radial-gradient(1px 1px at 230px 40px,#fff 98%,transparent);background-size:280px 190px;z-index:-1}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px clamp(18px,5vw,70px);border-bottom:1px solid #ffffff18}
+.brand{font-weight:850;letter-spacing:.09em;font-size:.9rem}.brand span{color:var(--yellow)}
+.pill{border:1px solid #ffffff2a;border-radius:999px;padding:8px 13px;color:var(--muted);font-size:.78rem}
+main{max-width:1200px;margin:auto;padding:34px clamp(16px,4vw,48px) 70px}
+.intro{text-align:center;margin:10px auto 24px;max-width:760px}
+.eyebrow{color:var(--yellow);font-size:.75rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase}
+h1{font-size:clamp(2rem,5vw,4rem);line-height:1.03;margin:12px 0}
+.intro p{color:var(--muted);line-height:1.6;margin:12px auto;max-width:620px}
+.space{position:relative;min-height:490px;border:1px solid #ffffff20;border-radius:28px;overflow:hidden;background:radial-gradient(ellipse at 50% 58%,#18335b77,transparent 56%),linear-gradient(145deg,#091a35dd,#040c1cdd);box-shadow:0 24px 80px #0006}
+.space:before,.space:after{content:"";position:absolute;border:1px solid #ffffff12;border-radius:50%;width:560px;height:230px;left:50%;top:52%;transform:translate(-50%,-50%) rotate(-13deg);pointer-events:none}
+.space:after{width:830px;height:330px;transform:translate(-50%,-50%) rotate(12deg)}
+.earth-wrap{position:absolute;left:50%;top:51%;transform:translate(-50%,-50%);display:grid;justify-items:center;gap:10px;z-index:3}
+.earth{width:105px;height:105px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#a5e5ff,#2778bb 48%,#123b78 76%,#07152e);box-shadow:0 0 35px #4ca9ff77,inset -12px -10px 20px #06152d99;position:relative}
+.earth:before{content:"";position:absolute;inset:20% 30% 25% 16%;background:#6bc28b;clip-path:polygon(15% 0,75% 8%,100% 35%,70% 48%,80% 85%,40% 100%,25% 62%,0 35%);border-radius:40%}
+.earth:after{content:"";position:absolute;width:25px;height:10px;left:58%;top:60%;background:#6bc28b;clip-path:polygon(0 20%,100% 0,75% 100%,20% 80%)}
+.planet-label{font-weight:800;text-shadow:0 2px 8px #000}
+.planet{position:absolute;z-index:4;border:0;background:none;color:white;cursor:pointer;display:grid;justify-items:center;gap:9px;padding:10px;transition:transform .2s}
+.planet:hover,.planet:focus-visible{transform:scale(1.08);outline:none}
+.planet:focus-visible .sphere{outline:3px solid white;outline-offset:5px}
+.sphere{display:block;width:75px;height:75px;border-radius:50%;box-shadow:inset -13px -9px 19px #0008,0 0 24px #ffffff20;position:relative}
+.mars{background:radial-gradient(circle at 30% 25%,#ffb17b,#d65b36 48%,#80301f 83%)}
+.jupiter{width:96px;height:96px;background:repeating-linear-gradient(0deg,#b47b4e 0 8px,#e3c59b 8px 17px,#9a6549 17px 24px,#e8d4ae 24px 33px);background-size:100% 100%}
+.jupiter:after{content:"";position:absolute;width:24px;height:13px;border-radius:50%;background:#a94f39;right:13px;top:52px}
+.saturn{background:radial-gradient(circle at 30% 25%,#fff0b2,#d4ad67 55%,#80613d)}
+.saturn:after{content:"";position:absolute;width:126px;height:37px;border:8px solid #d8c18d;border-left-color:#a88c5c;border-right-color:#f0dca7;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-19deg);z-index:-1}
+.venus{background:radial-gradient(circle at 32% 25%,#fff1b2,#d6a84f 52%,#8d572c 90%)}
+.p-mars{left:12%;top:13%}.p-jupiter{right:11%;top:12%}.p-saturn{left:12%;bottom:10%}.p-venus{right:12%;bottom:10%}
+.planet small{color:#dce7fb;font-weight:700;text-shadow:0 2px 7px #000}
+.rocket{position:absolute;left:50%;top:51%;width:64px;height:90px;z-index:8;transform:translate(-50%,-50%) rotate(0deg);filter:drop-shadow(0 8px 12px #0009);pointer-events:none}
+.rocket svg{width:100%;height:100%;overflow:visible}
+.rocket{transition:left 2.25s cubic-bezier(.2,.72,.22,1),top 2.25s cubic-bezier(.2,.72,.22,1),transform .35s ease}
+.rocket.fly{filter:drop-shadow(0 0 13px #ffd34e) drop-shadow(0 8px 12px #0009)}
+.trail{position:absolute;left:50%;top:58%;width:8px;height:0;background:linear-gradient(#ffd34e,transparent);filter:blur(4px);z-index:7}
+.status{text-align:center;min-height:48px;padding:14px 10px;color:#dce7fb;font-size:.94rem}
+.status strong{color:var(--yellow)}
+.hint{text-align:center;color:var(--muted);font-size:.82rem;margin:5px 0 0}
+.panel{display:none;margin:24px auto 0;max-width:850px;padding:clamp(20px,4vw,32px);border:1px solid #ffffff2b;border-radius:24px;background:var(--panel);box-shadow:0 20px 60px #0006;animation:appear .45s ease}
+.panel.show{display:block}
+@keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.panel-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.panel-icon{font-size:2rem}.panel h2{margin:0;font-size:clamp(1.4rem,3vw,2rem)}.panel .sub{color:var(--yellow);font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;font-weight:800}
+.panel p{color:#d5def0;line-height:1.65}.panel h3{font-size:1rem;color:var(--yellow);margin:20px 0 8px}
+.panel ul{padding-left:21px;color:#d5def0;line-height:1.7}.panel li{margin:5px 0}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.btn{border:0;border-radius:999px;padding:12px 18px;font-weight:800;cursor:pointer;background:var(--yellow);color:#14213b}
+.btn.secondary{background:#ffffff12;color:white;border:1px solid #ffffff35}
+.btn:focus-visible{outline:3px solid white;outline-offset:3px}
+footer{text-align:center;color:#8292ad;font-size:.76rem;padding:22px}
+@media(max-width:650px){
+ header{padding:15px 17px}.pill{font-size:.68rem}
+ main{padding-top:25px}.space{min-height:560px;border-radius:20px}
+ .earth{width:82px;height:82px}
+ .sphere{width:58px;height:58px}.jupiter{width:69px;height:69px}
+ .saturn:after{width:100px;height:29px;border-width:6px}
+ .p-mars{left:2%;top:8%}.p-jupiter{right:2%;top:8%}
+ .p-saturn{left:2%;bottom:7%}.p-venus{right:2%;bottom:7%}
+ .planet{font-size:.86rem;padding:5px}
+ .space:before{width:360px;height:180px}.space:after{width:470px;height:240px}
+ .rocket{width:50px;height:72px}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<header><div class="brand">✦ EXPLORADOR <span>ESPACIAL</span></div><div class="pill">MISIÓN: CONOCIMIENTO</div></header>
+<main>
+<section class="intro">
+ <div class="eyebrow">Una aventura por la fabricación digital</div>
+ <h1>Tu próxima parada es el <span style="color:var(--yellow)">conocimiento</span>.</h1>
+ <p>Elige un planeta para explorar los temas del manual técnico. ¡El cohete siempre despegará desde la Tierra!</p>
+</section>
+<section class="space" aria-label="Mapa interactivo del sistema planetario">
+ <button class="planet p-mars" data-planet="mars" aria-label="Viajar a Marte"><span class="sphere mars"></span><small>MARTE</small></button>
+ <button class="planet p-jupiter" data-planet="jupiter" aria-label="Viajar a Júpiter"><span class="sphere jupiter"></span><small>JÚPITER</small></button>
+ <button class="planet p-saturn" data-planet="saturn" aria-label="Viajar a Saturno"><span class="sphere saturn"></span><small>SATURNO</small></button>
+ <button class="planet p-venus" data-planet="venus" aria-label="Viajar a Venus"><span class="sphere venus"></span><small>VENUS</small></button>
+ <div class="earth-wrap"><div class="earth" aria-label="Planeta Tierra"></div><div class="planet-label">TIERRA</div></div>
+ <div class="rocket" id="rocket" aria-hidden="true">
+  <svg viewBox="0 0 70 100" xmlns="http://www.w3.org/2000/svg">
+   <path d="M35 4 C17 20 18 47 20 67 L50 67 C52 47 53 20 35 4Z" fill="#102b55" stroke="#ffd34e" stroke-width="3"/>
+   <path d="M35 7 C27 22 27 35 27 47 L43 47 C43 35 43 22 35 7Z" fill="#244d82"/>
+   <circle cx="35" cy="37" r="8" fill="#ffd34e" stroke="#f7faff" stroke-width="2"/><circle cx="35" cy="37" r="4" fill="#70c8ef"/>
+   <path d="M20 54 L7 76 L22 70Z" fill="#ffd34e" stroke="#102b55" stroke-width="2"/><path d="M50 54 L63 76 L48 70Z" fill="#ffd34e" stroke="#102b55" stroke-width="2"/>
+   <path d="M27 66 L30 88 L35 95 L40 88 L43 66Z" fill="#dce7f6" stroke="#102b55" stroke-width="2"/>
+   <path d="M31 72 L35 91 L39 72Z" fill="#ffb12e"/>
+  </svg>
+ </div>
+</section>
+<div class="status" id="status" aria-live="polite">🚀 <strong>Cohete listo.</strong> Selecciona un planeta para comenzar tu viaje.</div>
+<p class="hint">Puedes regresar a la Tierra y elegir otro destino cuando quieras.</p>
+<section class="panel" id="info" aria-live="polite">
+ <div class="panel-head"><div class="panel-icon" id="panelIcon">🪐</div><div><div class="sub" id="panelSub">Destino alcanzado</div><h2 id="panelTitle">Planeta</h2></div></div>
+ <div id="panelBody"></div>
+ <div class="actions"><button class="btn" id="homeBtn">↩ Volver a la Tierra</button><button class="btn secondary" id="closeBtn">Cerrar información</button></div>
+</section>
+</main>
+<footer>Proyecto educativo · Contenido basado en el Manual Técnico de Fabricación Digital, PCBs y Manufactura Aditiva.</footer>
+<script>
+const topics={
+ mars:{name:"Marte",icon:"🔴",sub:"Tecnología CNC · Mecanizado de precisión",intro:"El Control Numérico Computarizado (CNC) es una tecnología de fabricación sustractiva. Utiliza herramientas que retiran material de una pieza mediante movimientos controlados por computadora en los ejes X, Y y Z; también puede incorporar ejes rotativos.",sections:[
+ ["Parámetros de corte",["Velocidad de corte (Vc): velocidad relativa entre la herramienta y la pieza, expresada en m/min.","Avance por diente (fz): espesor de viruta que corta cada filo; influye en la carga mecánica y el acabado superficial.","RPM del spindle: se calculan con N = (Vc × 1000) / (π × D), donde D es el diámetro del cortador en milímetros."]],
+ ["Programación y movimientos",["G00 y G01: movimiento rápido sin corte e interpolación lineal a velocidad programada.","G02 y G03: interpolación circular en sentido horario y antihorario.","G40, G41 y G42: cancelación y compensación del radio de herramienta.","G81 y G83: ciclos de taladrado simple y taladrado profundo con picoteo."]],
+ ["Estrategias de mecanizado",["El fresado convencional y el fresado en escalada son dos estrategias de mecanizado. Según el manual, el fresado en escalada reduce la fricción, mejora la evacuación de viruta y prolonga la vida útil de la herramienta."]]
+ ]},
+ jupiter:{name:"Júpiter",icon:"🟠",sub:"Diseño y metodologías avanzadas de PCBs",intro:"El diseño de placas de circuito impreso (PCB) debe considerar la Integridad de Señal (SI), la Integridad de Potencia (PI) y la Compatibilidad Electromagnética (EMC). El manual menciona los estándares IPC-2221 e IPC-2222.",sections:[
+ ["Capas y materiales (Stackup)",["Se selecciona el material dieléctrico, como FR-4 estándar (εr ≈ 4.5) o Rogers para alta frecuencia, además del grosor del cobre (1 oz = 35 µm).","En placas de cuatro o más capas, se intercalan capas de señal entre planos continuos de tierra (GND) y alimentación (PWR)."]],
+ ["Integridad de señal y ruteo",["El control de impedancia define el ancho de pista para microstrip y stripline: el manual indica valores estándar de 50 Ω y 100 Ω diferencial.","Los pares diferenciales se enrutan de forma acoplada y con longitudes ajustadas para líneas USB, Ethernet o HDMI, reduciendo el desfase (skew)."]],
+ ["Desacoplamiento y distribución",["Los capacitores cerámicos SMD de 0.1 µF se ubican lo más cerca posible de cada pin de alimentación del circuito integrado.","El placement por bloques separa físicamente circuitos de RF, analógicos de precisión, digitales de alta velocidad y etapas de potencia."]]
+ ]},
+ saturn:{name:"Saturno",icon:"🪐",sub:"Tecnologías de impresión 3D y manufactura aditiva",intro:"La manufactura aditiva construye objetos mediante la incorporación de material y permite crear geometrías complejas. El manual presenta tres tecnologías: FDM/FFF, SLA/MSLA y SLS.",sections:[
+ ["FDM / FFF",["Funciona mediante la extrusión térmica de un filamento termoplástico a través de una boquilla calefactada.","Materiales: PLA, ABS, PETG, TPU, ASA y nylon reforzado con fibra de carbono.","Aplicaciones: prototipos funcionales, piezas estructurales grandes, utillajes y fijaciones."]],
+ ["SLA / MSLA",["Utiliza fotopolimerización selectiva mediante luz UV, con láser o matriz LCD.","Emplea resinas acrílicas fotosensibles: rígidas, flexibles, lavables en agua o calcinables.","Se utiliza en modelado dental y médico, joyería fina y componentes minuciosos con acabado liso."]],
+ ["SLS y parámetros de impresión",["SLS fusiona un lecho de polvo polimérico mediante láser CO₂. Utiliza materiales como PA12, PA11 y Alumide.","La altura de capa influye en el acabado del eje Z y en el tiempo total de impresión. El infill o relleno puede usar patrones como giroide o triángulos.","El warping y la retracción son deformaciones relacionadas con el enfriamiento desigual; el manual menciona cama caliente y cabina cerrada como medidas para ABS."]]
+ ]},
+ venus:{name:"Venus",icon:"🟡",sub:"Integración industrial de las tres tecnologías",intro:"El manual explica cómo CNC, diseño de PCBs e impresión 3D pueden trabajar juntos durante el desarrollo de productos mecatrónicos.",sections:[
+ ["1. Impresión 3D",["La impresión 3D (FDM/SLA) permite validar rápidamente la ergonomía y el espacio interno del empaquetado."]],
+ ["2. Diseño y fabricación de PCB",["Paralelamente, se diseña y manufactura la placa de circuito impreso, buscando un diseño térmico y de señal óptimo."]],
+ ["3. Mecanizado CNC",["Para prototipos de validación estricta o producción final, la carcasa o el molde puede mecanizarse en aluminio anodizado mediante CNC.","El manual señala que este proceso puede lograr tolerancias dimensionales estrechas, menores de 0.02 mm, y resistencia al desgaste ambiental."]]
+ ]}
+};
+const rocket=document.getElementById("rocket"),statusEl=document.getElementById("status"),panel=document.getElementById("info");
+let busy=false,flightTimer;
+function travel(key){
+ if(busy)return;
+ busy=true;
+ panel.classList.remove("show");
+ clearTimeout(flightTimer);
+ const d=topics[key];
+ const space=document.querySelector(".space");
+ const earth=document.querySelector(".earth");
+ const destination=document.querySelector(`.planet[data-planet="${key}"] .sphere`);
+ const rocketEl=document.getElementById("rocket");
+ const box=space.getBoundingClientRect();
+ const earthBox=earth.getBoundingClientRect();
+ const destBox=destination.getBoundingClientRect();
+ const center=(r)=>({x:r.left-box.left+r.width/2,y:r.top-box.top+r.height/2});
+ const from=center(earthBox),to=center(destBox);
+ const dx=to.x-from.x,dy=to.y-from.y;
+ const angle=Math.atan2(dy,dx)*180/Math.PI+90;
+ // Begin visibly at the centre of Earth on every trip.
+ rocketEl.style.transition="none";
+ rocketEl.style.left=from.x+"px";
+ rocketEl.style.top=from.y+"px";
+ rocketEl.style.transform="translate(-50%,-50%) rotate(0deg) scale(1)";
+ rocketEl.classList.remove("fly");
+ void rocketEl.offsetWidth;
+ statusEl.innerHTML=`🚀 El cohete está en <strong>la Tierra</strong>. ¡Iniciando viaje hacia <strong>${d.name}</strong>!`;
+ // Brief countdown, then travel all the way to the selected planet.
+ flightTimer=setTimeout(()=>{
+   rocketEl.style.transition="left 2.5s cubic-bezier(.2,.72,.22,1),top 2.5s cubic-bezier(.2,.72,.22,1),transform .35s ease,filter .35s ease";
+   rocketEl.classList.add("fly");
+   rocketEl.style.transform=`translate(-50%,-50%) rotate(${angle}deg) scale(.88)`;
+   rocketEl.style.left=to.x+"px";
+   rocketEl.style.top=to.y+"px";
+   statusEl.innerHTML=`🚀 Viajando desde <strong>la Tierra</strong> hasta <strong>${d.name}</strong>...`;
+   flightTimer=setTimeout(()=>{
+     rocketEl.style.transform="translate(-50%,-50%) rotate(0deg) scale(.88)";
+     statusEl.innerHTML=`✨ ¡Llegamos a <strong>${d.name}</strong>! Explora la información de esta misión.`;
+     document.getElementById("panelIcon").textContent=d.icon;
+     document.getElementById("panelSub").textContent=d.sub;
+     document.getElementById("panelTitle").textContent=d.name;
+     const body=document.getElementById("panelBody");body.replaceChildren();
+     const p=document.createElement("p");p.textContent=d.intro;body.appendChild(p);
+     d.sections.forEach(([heading,items])=>{
+       const h=document.createElement("h3");h.textContent=heading;body.appendChild(h);
+       const ul=document.createElement("ul");items.forEach(item=>{const li=document.createElement("li");li.textContent=item;ul.appendChild(li)});body.appendChild(ul);
+     });
+     panel.classList.add("show");
+     panel.scrollIntoView({behavior:"smooth",block:"start"});
+     busy=false;
+   },2550);
+ },250);
+}
+function home(){
+ if(busy)return;
+ panel.classList.remove("show");
+ const space=document.querySelector(".space"),earth=document.querySelector(".earth"),r=document.getElementById("rocket");
+ const b=space.getBoundingClientRect(),e=earth.getBoundingClientRect();
+ r.style.transition="left 1.1s ease,top 1.1s ease,transform .3s ease";
+ r.style.left=(e.left-b.left+e.width/2)+"px";
+ r.style.top=(e.top-b.top+e.height/2)+"px";
+ r.style.transform="translate(-50%,-50%) rotate(0deg) scale(1)";
+ r.classList.remove("fly");
+ statusEl.innerHTML="🌍 El cohete ha regresado a <strong>la Tierra</strong>. Elige tu próximo destino.";
+ space.scrollIntoView({behavior:"smooth",block:"center"});
+}
+document.querySelectorAll(".planet").forEach(btn=>btn.addEventListener("click",()=>travel(btn.dataset.planet)));
+document.getElementById("homeBtn").addEventListener("click",home);
+document.getElementById("closeBtn").addEventListener("click",()=>panel.classList.remove("show"));
+</script>
+</body>
+</html>
